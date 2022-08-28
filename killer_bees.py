@@ -4,6 +4,7 @@ import pygame.sprite
 
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 
 class KillerBees:
@@ -29,7 +30,6 @@ class KillerBees:
             # finally update the screen
             self._update_screen()   # update the screen
 
-
     def _check_events(self):
         """ Responds to key presses and mouse events """
         for event in pg.event.get():
@@ -48,21 +48,30 @@ class KillerBees:
             self.ship.moving_right = True
         elif event.key == pg.K_LEFT:
             self.ship.moving_left = True
+        elif event.key == pg.K_SPACE:
+            self._fire_bullet()
         elif event.key == pg.K_q:
             sys.exit()
 
     def _check_keyup_events(self, event):
-        """ Respond to key releases """
+        """ Respond to key releases """1
         if event.key == pg.K_RIGHT:
             self.ship.moving_right = False
         elif event.key == pg.K_LEFT:
             self.ship.moving_left = False
+
+    def _fire_bullet(self):
+        """ Create a new bullet and add it to the bullets group """
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)
 
     def _update_screen(self):
         """ Update images on the screen, and flip to the new screen """
         self.screen.fill(self.settings.bg_colour)
         self.ship.blitme()
         self.ship.drawbee()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
         pg.display.flip()
 
 
