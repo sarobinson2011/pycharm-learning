@@ -13,3 +13,6 @@ class Bee(Sprite):
         # Load the bee image and set its rect attribute
         self.image = pg.image.load('/home/oem/Downloads/bee-180.bmp')
         self.rect = self.image.get_rect()
+
+        # Start each new bee near the top left of the screen
+
