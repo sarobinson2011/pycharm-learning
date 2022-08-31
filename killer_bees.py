@@ -22,7 +22,6 @@ class KillerBees:
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.bees = pygame.sprite.Group()
-
         self._create_swarm()
 
     def run_game(self):
@@ -100,7 +99,7 @@ class KillerBees:
 
         # Determine the number of rows of bees that fit on the screen
         ship_height = self.ship.rect.height
-        available_space_y = (self.settings.screen_height - (3 * bee_height) - ship_height)
+        available_space_y = (self.settings.screen_height - (6 * bee_height) - ship_height)
         number_rows = available_space_y // (2 * bee_height)
 
         # Create the full swarm of bees
@@ -114,7 +113,7 @@ class KillerBees:
         bee_width, bee_height = bee.rect.size
         bee.x = bee_width + 2 * bee_width * bee_number
         bee.rect.x = bee.x
-        bee.rect.y = bee_height + 2 * bee.rect.height * row_number
+        bee.rect.y = bee_height + 1.7 * bee.rect.height * row_number
         self.bees.add(bee)
 
 
