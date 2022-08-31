@@ -8,4 +8,8 @@ class Bee(Sprite):
     def __init__(self, kb_game):
         """ Initialize the bee and set its starting position """
         super().__init__()
-        self.screen = kb_game_screen
+        self.screen = kb_game.screen
+
+        # Load the bee image and set its rect attribute
+        self.image = pg.image.load('/home/oem/Downloads/bee-180.bmp')
+        self.rect = self.image.get_rect()
