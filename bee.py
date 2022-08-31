@@ -15,4 +15,8 @@ class Bee(Sprite):
         self.rect = self.image.get_rect()
 
         # Start each new bee near the top left of the screen
+        self.rect.x = self.rect.width
+        self.rect.y = self.rect.height
 
+        # Store the aliens exact horizontal position
+        self.x = float(self.rect.x)

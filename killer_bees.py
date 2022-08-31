@@ -5,6 +5,7 @@ import pygame.sprite
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from bee import Bee
 
 
 class KillerBees:
@@ -20,6 +21,9 @@ class KillerBees:
         pg.display.set_caption("Killer Bees - v1")
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
+        self.bees = pygame.sprite.Group()
+
+        self._create_swarm()
 
     def run_game(self):
         """ main loop for the game """
@@ -79,11 +83,39 @@ class KillerBees:
         """ Update images on the screen, and flip to the new screen """
         self.screen.fill(self.settings.bg_colour)
         self.ship.blitme()
-        self.ship.drawbee()
+
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+        self.bees.draw(self.screen)
 
         pg.display.flip()
+
+    def _create_swarm(self):
+        """ Create the swarm of bees """
+        # Create a bee & find how many bees fit on a row (spacing = 1 bee width)
+        bee = Bee(self)
+        bee_width, bee_height = bee.rect.size
+        available_space_x = self.settings.screen_width - (2 * bee_width)
+        number_bees_x = available_space_x // (2 * bee_width)
+
+        # Determine the number of rows of bees that fit on the screen
+        ship_height = self.ship.rect.height
+        available_space_y = (self.settings.screen_height - (3 * bee_height) - ship_height)
+        number_rows = available_space_y // (2 * bee_height)
+
+        # Create the full swarm of bees
+        for row_number in range(number_rows):
+            for bee in range(number_bees_x):
+                self._create_bee(bee, row_number)
+
+    def _create_bee(self, bee_number, row_number):
+        # Create a bee and place it in the row
+        bee = Bee(self)
+        bee_width, bee_height = bee.rect.size
+        bee.x = bee_width + 2 * bee_width * bee_number
+        bee.rect.x = bee.x
+        bee.rect.y = bee_height + 2 * bee.rect.height * row_number
+        self.bees.add(bee)
 
 
 if __name__ == '__main__':

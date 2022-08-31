@@ -14,7 +14,7 @@ class Bullet(Sprite):
 
         # Create a bullet rect at (0, 0) and then set the correct position
         self.rect = pg.Rect(0, 0, self.settings.bullet_width, self.settings.bullet_height)
-        self.rect.midtop = kb_game.ship.rect1.midtop
+        self.rect.midtop = kb_game.ship.rect.midtop
 
         # Store the bullet's position as a decimal value
         self.y = float(self.rect.y)
