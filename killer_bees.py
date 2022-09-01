@@ -19,28 +19,26 @@ class KillerBees:
         # self.settings.screen_width = self.screen.get_rect().width
         # self.settings.screen_height = self.screen.get_rect().height
         self.screen = pg.display.set_mode((self.settings.screen_width, self.settings.screen_height))
-
-        self.background = self.settings.bg_image
-
         pg.display.set_caption("Killer Bees - v1")
         self.ship = Ship(self)
-        self.bullets = pygame.sprite.Group()
-        self.bees = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()        # bullets group
+        self.bees = pygame.sprite.Group()           # bees group - "the swarm"
         self._create_swarm()
 
     def run_game(self):
         """ main loop for the game """
         while True:
-            # self._load_background() # todo
+            # self._load_background()
             self._check_events()    # check for keyboard events
             self.ship.update()      # update the position of the ship
-            self._update_bullets()
-            self._update_screen()
+            self._update_bullets()  #
+            self._update_bees()     #
+            self._update_screen()   #
 
-    def _load_background(self):     # todo
-        """ Loads the game background image """
-        self.background = pg.image.load('/home/oem/Downloads/honeycomb.bmp')
-        pg.transform.scale(self.background, (self.settings.screen_width, self.settings.screen_height))
+    # def _load_background(self):     # todo
+    #     """ Loads the game background image """
+    #     self.background = pg.image.load('/home/oem/Downloads/honeycomb.bmp')
+    #     pg.transform.scale(self.background, (self.settings.screen_width, self.settings.screen_height))
 
     def _check_events(self):
         """ Responds to key presses and mouse events """
@@ -99,12 +97,21 @@ class KillerBees:
 
         pg.display.flip()
 
+    def _create_bee(self, bee_number, row_number):
+        # Create a bee and place it in the row
+        bee = Bee(self)
+        bee_width, bee_height = bee.rect.size
+        bee.x = bee_width + 2 * bee_width * bee_number
+        bee.rect.x = bee.x
+        bee.rect.y = bee_height + 1.7 * bee.rect.height * row_number
+        self.bees.add(bee)
+
     def _create_swarm(self):
         """ Create the swarm of bees """
         # Create a bee & find how many bees fit on a row (spacing = 1 bee width)
         bee = Bee(self)
         bee_width, bee_height = bee.rect.size
-        available_space_x = self.settings.screen_width - (2 * bee_width)
+        available_space_x = self.settings.screen_width - (6 * bee_width)
         number_bees_x = available_space_x // (2 * bee_width)
 
         # Determine the number of rows of bees that fit on the screen
@@ -119,14 +126,26 @@ class KillerBees:
             for bee in range(number_bees_x):
                 self._create_bee(bee, row_number)
 
-    def _create_bee(self, bee_number, row_number):
-        # Create a bee and place it in the row
-        bee = Bee(self)
-        bee_width, bee_height = bee.rect.size
-        bee.x = bee_width + 2 * bee_width * bee_number
-        bee.rect.x = bee.x
-        bee.rect.y = bee_height + 1.7 * bee.rect.height * row_number
-        self.bees.add(bee)
+    def _update_bees(self):
+        """
+        Check if the swarm is at an edge, then
+        update the positions of all bees in the swarm
+        """
+        self._check_swarm_edges()
+        self.bees.update()
+
+    def _check_swarm_edges(self):
+        """ Respond appropriately if a bee has reached the screen edge """
+        for bee in self.bees.sprites():
+            if bee.check_edges():
+                self._change_swarm_direction()
+                break
+
+    def _change_swarm_direction(self):
+        """ Drop the entire swarm and change the swarm direction"""
+        for bee in self.bees.sprites():
+            bee.rect.y += self.settings.swarm_drop_speed
+        self.settings.swarm_direction *= -1
 
 
 if __name__ == '__main__':

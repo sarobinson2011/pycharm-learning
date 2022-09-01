@@ -9,7 +9,7 @@ class Ship:
         self.screen = kb_game.screen
         self.settings = kb_game.settings
         self.screen_rect = kb_game.screen.get_rect()
-        self.image = pg.image.load('/home/oem/Downloads/ship.bmp')
+        self.image = pg.image.load('/home/oem/Downloads/ship-filled.bmp')
         self.rect = self.image.get_rect()
         # start each new ship at the bottom centre of the screen
         self.rect.midbottom = self.screen_rect.midbottom
