@@ -1,6 +1,7 @@
 import sys
 import pygame as pg
 import pygame.sprite
+import random as rd
 
 from settings import Settings
 from ship import Ship
@@ -18,6 +19,9 @@ class KillerBees:
         # self.settings.screen_width = self.screen.get_rect().width
         # self.settings.screen_height = self.screen.get_rect().height
         self.screen = pg.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+
+        self.background = self.settings.bg_image
+
         pg.display.set_caption("Killer Bees - v1")
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -27,10 +31,16 @@ class KillerBees:
     def run_game(self):
         """ main loop for the game """
         while True:
+            # self._load_background() # todo
             self._check_events()    # check for keyboard events
             self.ship.update()      # update the position of the ship
             self._update_bullets()
             self._update_screen()
+
+    def _load_background(self):     # todo
+        """ Loads the game background image """
+        self.background = pg.image.load('/home/oem/Downloads/honeycomb.bmp')
+        pg.transform.scale(self.background, (self.settings.screen_width, self.settings.screen_height))
 
     def _check_events(self):
         """ Responds to key presses and mouse events """
@@ -99,7 +109,9 @@ class KillerBees:
 
         # Determine the number of rows of bees that fit on the screen
         ship_height = self.ship.rect.height
-        available_space_y = (self.settings.screen_height - (6 * bee_height) - ship_height)
+        # rand_int = rd.randint(6, 14)
+        rand_int = 6
+        available_space_y = (self.settings.screen_height - (rand_int * bee_height) - ship_height)
         number_rows = available_space_y // (2 * bee_height)
 
         # Create the full swarm of bees

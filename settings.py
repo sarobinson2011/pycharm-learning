@@ -1,3 +1,6 @@
+import pygame as pg
+
+
 class Settings:
     """ A Class to store all settings for the Alien Invasion game """
 
@@ -7,6 +10,8 @@ class Settings:
         self.screen_width = 1200
         self.screen_height = 800
         self.bg_colour = (253, 254, 254)
+
+        self.bg_image = pg.image.load('/home/oem/Downloads/honeycomb.bmp')
 
         # Ship settings
         self.ship_speed = 1.5
