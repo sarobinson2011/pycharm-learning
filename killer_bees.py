@@ -78,13 +78,21 @@ class KillerBees:
 
     def _update_bullets(self):
         """ Update position of bullets and get rid of old bullets """
-        # Update bullet positions
         self.bullets.update()
-
         # Get rid of bullets that have disappeared
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
+
+        self._check_bullet_bee_collisions()
+
+    def _check_bullet_bee_collisions(self):
+        """ Respond to bullet/bee collisions """
+        collisions = pg.sprite.groupcollide(self.bullets, self.bees, True, True)
+        if not self.bees:
+            # Destroy existing bullets & create new swarm
+            self.bullets.empty()
+            self._create_swarm()
 
     def _update_screen(self):
         """ Update images on the screen, and flip to the new screen """
@@ -133,6 +141,9 @@ class KillerBees:
         """
         self._check_swarm_edges()
         self.bees.update()
+        # Look for bee/ship collisions
+        if pg.sprite.spritecollideany(self.ship, self.bees):
+            print("Ship Hit !!")
 
     def _check_swarm_edges(self):
         """ Respond appropriately if a bee has reached the screen edge """

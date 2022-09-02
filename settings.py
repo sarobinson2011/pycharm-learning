@@ -12,13 +12,13 @@ class Settings:
         self.ship_speed = 1.5
 
         # Bee settings
-        self.bee_speed = 0.2
-        self.swarm_drop_speed = 3
+        self.bee_speed = 3
+        self.swarm_drop_speed = 10
         # Swarm direction: 1 = right, -1 = left
         self.swarm_direction = 1
 
         # Bullet settings
-        self.bullet_speed = 1.5
+        self.bullet_speed = 1.8
         self.bullet_colour = (192, 192, 192)
         self.bullet_width = 3
         self.bullet_height = 15
