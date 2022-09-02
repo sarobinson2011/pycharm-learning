@@ -1,9 +1,11 @@
 import sys
+from time import sleep
 import pygame as pg
 import pygame.sprite
 import random as rd
 
 from settings import Settings
+from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from bee import Bee
@@ -15,11 +17,11 @@ class KillerBees:
         """ initialise the game and create game resources """
         pg.init()
         self.settings = Settings()
-        # self.screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
-        # self.settings.screen_width = self.screen.get_rect().width
-        # self.settings.screen_height = self.screen.get_rect().height
         self.screen = pg.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pg.display.set_caption("Killer Bees - v1")
+
+        self.stats = GameStats(self)
+
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()        # bullets group
         self.bees = pygame.sprite.Group()           # bees group - "the swarm"
