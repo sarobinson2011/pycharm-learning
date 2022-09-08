@@ -20,7 +20,7 @@ class KillerBees:
         self.screen = pg.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pg.display.set_caption("Killer Bees - v1")
 
-        self.wallpaper = pg.image.load('/home/oem/Downloads/honeycomb.bmp')
+        self.wallpaper = pg.image.load('/home/oem/Documents/hive-washed-out.bmp')
         self.wallpaper = pg.transform.scale(self.wallpaper, (self.settings.screen_width, self.settings.screen_height))
         self.wallpaper_rect = self.wallpaper.get_rect()
 
@@ -189,7 +189,7 @@ class KillerBees:
     def _update_screen(self):
         """ Update images on the screen, and flip to the new screen """
         self.screen.fill(self.settings.bg_colour)
-        # self.screen.blit(self.wallpaper, self.wallpaper_rect)
+        self.screen.blit(self.wallpaper, self.wallpaper_rect)
 
         self.ship.blitme()
 
