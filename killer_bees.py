@@ -20,6 +20,7 @@ class KillerBees:
         self.screen = pg.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pg.display.set_caption("Killer Bees - v1")
 
+        # create an instance to store game statistics
         self.stats = GameStats(self)
 
         self.ship = Ship(self)
@@ -31,11 +32,15 @@ class KillerBees:
         """ main loop for the game """
         while True:
             # self._load_background()
-            self._check_events()    # check for keyboard events
-            self.ship.update()      # update the position of the ship
-            self._update_bullets()  #
-            self._update_bees()     #
-            self._update_screen()   #
+            self._check_events()
+
+            if self.stats.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_bees()
+
+            # even if the game is inactive still need 'Q' to work as Quit
+            self._update_screen()
 
     # def _load_background(self):     # todo
     #     """ Loads the game background image """
@@ -96,25 +101,36 @@ class KillerBees:
             self.bullets.empty()
             self._create_swarm()
 
-    def _update_screen(self):
-        """ Update images on the screen, and flip to the new screen """
-        self.screen.fill(self.settings.bg_colour)
-        self.ship.blitme()
+    def _update_bees(self):
+        """
+        Check if the swarm is at an edge, then
+        update the positions of all bees in the swarm
+        """
+        self._check_swarm_edges()
+        self.bees.update()
 
-        for bullet in self.bullets.sprites():
-            bullet.draw_bullet()
-        self.bees.draw(self.screen)
+        # Look for bee/ship collisions
+        if pg.sprite.spritecollideany(self.ship, self.bees):
+            self._ship_hit()
 
-        pg.display.flip()
+        # Look for Bees hitting bottom of the screen
+        self._check_bees_bottom()
 
-    def _create_bee(self, bee_number, row_number):
-        # Create a bee and place it in the row
-        bee = Bee(self)
-        bee_width, bee_height = bee.rect.size
-        bee.x = bee_width + 2 * bee_width * bee_number
-        bee.rect.x = bee.x
-        bee.rect.y = bee_height + 1.7 * bee.rect.height * row_number
-        self.bees.add(bee)
+    def _ship_hit(self):
+        """ Respond to the ship being hit by a Bee """
+        if self.stats.ships_left > 0:
+            # Decrement ships left
+            self.stats.ships_left -= 1
+            # Get rid of any remaining bees and bullets
+            self.bees.empty()
+            self.bullets.empty()
+            # Create a new swarm and centre the ship
+            self._create_swarm()
+            self.ship.centre_ship()
+            # Pause (0.5s)
+            sleep(0.5)
+        else:
+            self.stats.game_active = False
 
     def _create_swarm(self):
         """ Create the swarm of bees """
@@ -136,16 +152,14 @@ class KillerBees:
             for bee in range(number_bees_x):
                 self._create_bee(bee, row_number)
 
-    def _update_bees(self):
-        """
-        Check if the swarm is at an edge, then
-        update the positions of all bees in the swarm
-        """
-        self._check_swarm_edges()
-        self.bees.update()
-        # Look for bee/ship collisions
-        if pg.sprite.spritecollideany(self.ship, self.bees):
-            print("Ship Hit !!")
+    def _create_bee(self, bee_number, row_number):
+        # Create a bee and place it in the row
+        bee = Bee(self)
+        bee_width, bee_height = bee.rect.size
+        bee.x = bee_width + 2 * bee_width * bee_number
+        bee.rect.x = bee.x
+        bee.rect.y = bee_height + 1.7 * bee.rect.height * row_number
+        self.bees.add(bee)
 
     def _check_swarm_edges(self):
         """ Respond appropriately if a bee has reached the screen edge """
@@ -159,6 +173,26 @@ class KillerBees:
         for bee in self.bees.sprites():
             bee.rect.y += self.settings.swarm_drop_speed
         self.settings.swarm_direction *= -1
+
+    def _check_bees_bottom(self):
+        """ Check if any bees have reached the bottom of the screen """
+        screen_rect = self.screen.get_rect()
+        for bee in self.bees.sprites():
+            if bee.rect.bottom >= screen_rect.bottom:
+                # React the same way as if the ship got hit
+                self._ship_hit()
+                break
+
+    def _update_screen(self):
+        """ Update images on the screen, and flip to the new screen """
+        self.screen.fill(self.settings.bg_colour)
+        self.ship.blitme()
+
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+        self.bees.draw(self.screen)
+
+        pg.display.flip()
 
 
 if __name__ == '__main__':
