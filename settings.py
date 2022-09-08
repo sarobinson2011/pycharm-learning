@@ -13,8 +13,8 @@ class Settings:
         self.ship_limit = 3
 
         # Bee settings
-        self.bee_speed = 3
-        self.swarm_drop_speed = 10
+        self.bee_speed = 1
+        self.swarm_drop_speed = 8
         # Swarm direction: 1 = right, -1 = left
         self.swarm_direction = 1
 

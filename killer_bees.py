@@ -20,6 +20,10 @@ class KillerBees:
         self.screen = pg.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pg.display.set_caption("Killer Bees - v1")
 
+        self.wallpaper = pg.image.load('/home/oem/Downloads/honeycomb.bmp')
+        self.wallpaper = pg.transform.scale(self.wallpaper, (self.settings.screen_width, self.settings.screen_height))
+        self.wallpaper_rect = self.wallpaper.get_rect()
+
         # create an instance to store game statistics
         self.stats = GameStats(self)
 
@@ -33,7 +37,6 @@ class KillerBees:
         while True:
             # self._load_background()
             self._check_events()
-
             if self.stats.game_active:
                 self.ship.update()
                 self._update_bullets()
@@ -42,7 +45,7 @@ class KillerBees:
             # even if the game is inactive still need 'Q' to work as Quit
             self._update_screen()
 
-    # def _load_background(self):     # todo
+    # def _load_background(self):     #
     #     """ Loads the game background image """
     #     self.background = pg.image.load('/home/oem/Downloads/honeycomb.bmp')
     #     pg.transform.scale(self.background, (self.settings.screen_width, self.settings.screen_height))
@@ -158,7 +161,7 @@ class KillerBees:
         bee_width, bee_height = bee.rect.size
         bee.x = bee_width + 2 * bee_width * bee_number
         bee.rect.x = bee.x
-        bee.rect.y = bee_height + 1.7 * bee.rect.height * row_number
+        bee.rect.y = bee_height + 2 * bee.rect.height * row_number
         self.bees.add(bee)
 
     def _check_swarm_edges(self):
@@ -186,6 +189,8 @@ class KillerBees:
     def _update_screen(self):
         """ Update images on the screen, and flip to the new screen """
         self.screen.fill(self.settings.bg_colour)
+        # self.screen.blit(self.wallpaper, self.wallpaper_rect)
+
         self.ship.blitme()
 
         for bullet in self.bullets.sprites():
