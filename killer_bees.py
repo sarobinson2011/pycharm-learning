@@ -87,8 +87,20 @@ class KillerBees:
 
     def _check_play_button(self, mouse_pos):
         """ Start a new game when player clicks the play button """
-        if self.play_button.rect.collidepoint(mouse_pos):
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            # Reset the game statistics
+            self.stats.reset_stats()
             self.stats.game_active = True
+            # Get rid of any remaining aliens and bullets
+            self.bees.empty()
+            self.bullets.empty()
+            # Create a new swarm and centre the ship
+            self._create_swarm()
+            self.ship.centre_ship()
+            # Hide the mouse cursor
+            pg.mouse.set_visible(False)
+
 
     def _fire_bullet(self):
         """ Create a new bullet and add it to the bullets group """
@@ -144,6 +156,7 @@ class KillerBees:
             sleep(0.5)
         else:
             self.stats.game_active = False
+            pg.mouse.set_visible(True)
 
     def _create_swarm(self):
         """ Create the swarm of bees """
