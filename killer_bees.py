@@ -6,6 +6,7 @@ import random as rd
 
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from ship import Ship
 from bullet import Bullet
 from bee import Bee
@@ -19,18 +20,18 @@ class KillerBees:
         self.settings = Settings()
         self.screen = pg.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pg.display.set_caption("Killer Bees - v1")
-
         self.wallpaper = pg.image.load('/home/oem/Documents/hive-washed-out.bmp')
         self.wallpaper = pg.transform.scale(self.wallpaper, (self.settings.screen_width, self.settings.screen_height))
         self.wallpaper_rect = self.wallpaper.get_rect()
-
         # create an instance to store game statistics
         self.stats = GameStats(self)
-
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()        # bullets group
         self.bees = pygame.sprite.Group()           # bees group - "the swarm"
         self._create_swarm()
+        # Make the 'Play' button
+        self.play_button = Button(self, "Play")
+
 
     def run_game(self):
         """ main loop for the game """
@@ -62,6 +63,10 @@ class KillerBees:
             elif event.type == pg.KEYUP:
                 self._check_keyup_events(event)
 
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                mouse_pos = pg.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+
     def _check_keydown_events(self, event):
         """ Respond to key presses """
         if event.key == pg.K_RIGHT:
@@ -79,6 +84,11 @@ class KillerBees:
             self.ship.moving_right = False
         elif event.key == pg.K_LEFT:
             self.ship.moving_left = False
+
+    def _check_play_button(self, mouse_pos):
+        """ Start a new game when player clicks the play button """
+        if self.play_button.rect.collidepoint(mouse_pos):
+            self.stats.game_active = True
 
     def _fire_bullet(self):
         """ Create a new bullet and add it to the bullets group """
@@ -196,6 +206,10 @@ class KillerBees:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.bees.draw(self.screen)
+
+        # Draw the 'Play' button if the game is inactive
+        if not self.stats.game_active:
+            self.play_button.draw_button()
 
         pg.display.flip()
 
