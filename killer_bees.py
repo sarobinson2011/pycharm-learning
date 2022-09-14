@@ -89,6 +89,8 @@ class KillerBees:
         """ Start a new game when player clicks the play button """
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
+            # Reset the game settings
+            self.settings.initialise_dynamic_settings()
             # Reset the game statistics
             self.stats.reset_stats()
             self.stats.game_active = True
@@ -100,7 +102,6 @@ class KillerBees:
             self.ship.centre_ship()
             # Hide the mouse cursor
             pg.mouse.set_visible(False)
-
 
     def _fire_bullet(self):
         """ Create a new bullet and add it to the bullets group """
@@ -125,6 +126,7 @@ class KillerBees:
             # Destroy existing bullets & create new swarm
             self.bullets.empty()
             self._create_swarm()
+            self.settings.increase_speed()
 
     def _update_bees(self):
         """
